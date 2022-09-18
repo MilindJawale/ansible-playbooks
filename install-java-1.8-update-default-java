@@ -1,0 +1,19 @@
+---
+ - hosts: qa[0]
+   gather_facts: yes
+   become: yes
+   tasks:
+     - name: update server
+       yum:
+         name: "*"
+         state: latest
+     - name: install java
+       yum:
+         name: java-1.8.0-openjdk-devel
+         state: present
+     - name: setting default java
+       alternatives:
+         name: java
+         link: /usr/bin/java
+         path: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.342.b07-1.amzn2.0.1.x86_64/jre/bin/java         #this path imp at end /bin/java
+
