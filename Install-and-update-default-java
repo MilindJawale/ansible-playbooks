@@ -1,0 +1,18 @@
+---
+ - hosts: qa[1]
+   gather_facts: yes
+   become: yes
+   tasks:
+     - name: update server
+       yum:
+         name: "*"
+         state: latest
+     - name: install java
+       yum:
+         name: java-11*
+         state: present
+     - name: setting default java
+       alternatives:
+         name: java
+         link: /usr/bin/java
+         path: /usr/lib/jvm/java-11-amazon-corretto.x86_64/bin/java         #this path imp at end /bin/java
