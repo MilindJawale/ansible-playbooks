@@ -1,0 +1,34 @@
+---
+ - hosts: dev
+   gather_facts: yes
+   become: yes
+   vars:
+     maven_url: https://dlcdn.apache.org/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz
+   tasks:
+    - name: update server
+      yum:
+        name: "*"
+        state: present
+    - name: install java
+      yum:
+        name: java-1.8.0-openjdk-devel
+        state: present
+    - name: download maven
+      get_url:
+        url: "{{maven_url}}"
+        dest: /mnt
+    - name: unarchive the maven
+      unarchive:
+        src: "/mnt/apache-maven-3.8.6-bin.tar.gz"
+        dest: /mnt
+        remote_src: yes
+        mode: 0777
+    - name: updating path of maven
+      lineinfile:
+        path: /root/.bashrc
+        line: "{{item}}"
+      with_items:
+        - export MAVEN_HOME=/mnt/apache-maven-3.8.6
+        - export M2_HOME=/mnt/apache-maven-3.8.6
+        - export M2=/mnt/apache-maven-3.8.6/bin
+        - export PATH=/mnt/apache-maven-3.8.6/bin:$PATH
